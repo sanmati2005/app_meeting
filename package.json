@@ -1,0 +1,32 @@
+{
+  "name": "meetingapp",
+  "version": "1.0.0",
+  "description": "AI-powered video meeting application",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:memory --prefix backend\" \"npm run dev --prefix frontend\"",
+    "build": "npm run build --prefix frontend",
+    "start": "npm start --prefix backend",
+    "test": "concurrently \"npm test --prefix backend\" \"npm test --prefix frontend\"",
+    "docker:build": "docker-compose build",
+    "docker:start": "docker-compose up",
+    "docker:stop": "docker-compose down",
+    "docker:logs": "docker-compose logs"
+  },
+  "keywords": [
+    "meeting",
+    "video",
+    "conference",
+    "ai",
+    "webrtc"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.0.0",
+    "eslint": "^9.37.0"
+  },
+  "dependencies": {
+    "mongodb-memory-server": "^10.2.3"
+  }
+}

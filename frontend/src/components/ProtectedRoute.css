@@ -1,0 +1,13 @@
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a2a6c, #2c3e50);
+}
+
+.loading {
+  color: white;
+  font-size: 1.5rem;
+  text-align: center;
+}

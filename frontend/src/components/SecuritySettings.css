@@ -1,0 +1,221 @@
+.security-settings-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  color: var(--text-primary);
+}
+
+.security-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 20px;
+}
+
+.security-header h2 {
+  font-size: 2rem;
+  margin: 0 0 15px 0;
+  background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.security-header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.security-options {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.security-section {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  padding: 30px;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+}
+
+.security-section h3 {
+  margin: 0 0 25px 0;
+  color: var(--accent-primary);
+}
+
+.security-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.security-option:last-child {
+  border-bottom: none;
+}
+
+.option-info {
+  flex: 1;
+}
+
+.option-title {
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.option-description {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.option-toggle {
+  margin-left: 20px;
+}
+
+.toggle-btn {
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.toggle-btn.on {
+  background: linear-gradient(to right, #11998e, #38ef7d);
+  color: white;
+}
+
+.toggle-btn.off {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+}
+
+.toggle-btn:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+.passcode-section {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  padding: 25px;
+  margin-top: 20px;
+}
+
+.passcode-display {
+  margin-bottom: 25px;
+}
+
+.passcode-label {
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: var(--accent-primary);
+}
+
+.passcode-value {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 5px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 15px 20px;
+  border-radius: 10px;
+  justify-content: space-between;
+}
+
+.reveal-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.3s;
+}
+
+.reveal-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.passcode-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.action-btn {
+  padding: 12px 25px;
+  border-radius: 30px;
+  border: none;
+  background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: fit-content;
+}
+
+.action-btn:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+
+.action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.action-btn.lock-btn {
+  background: linear-gradient(to right, #ff416c, #ff4b2b);
+}
+
+.custom-passcode {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.passcode-input {
+  padding: 12px 20px;
+  border-radius: 30px;
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  outline: none;
+  min-width: 200px;
+}
+
+.passcode-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+  .security-option {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .option-toggle {
+    margin-left: 0;
+  }
+  
+  .custom-passcode {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

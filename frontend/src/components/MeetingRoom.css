@@ -1,0 +1,208 @@
+.meeting-room-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: white;
+}
+
+.meeting-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.meeting-header h2 {
+  margin: 0;
+  background: linear-gradient(to right, #ff7e5f, #feb47b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.create-meeting-btn {
+  padding: 12px 25px;
+  border-radius: 30px;
+  border: none;
+  background: linear-gradient(to right, #ff7e5f, #feb47b);
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  transition: transform 0.2s;
+}
+
+.create-meeting-btn:hover {
+  transform: scale(1.05);
+}
+
+.create-meeting-form {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 30px;
+  border-radius: 15px;
+  margin-bottom: 30px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.create-meeting-form h3 {
+  margin-top: 0;
+  text-align: center;
+  background: linear-gradient(to right, #4A00E0, #8E2DE2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 16px;
+  outline: none;
+}
+
+.form-group input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 15px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(to right, #11998e, #38ef7d);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.submit-btn:hover {
+  transform: scale(1.02);
+}
+
+.meetings-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.meeting-card {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s;
+}
+
+.meeting-card:hover {
+  transform: translateY(-5px);
+}
+
+.meeting-info h3 {
+  margin: 0 0 15px 0;
+  background: linear-gradient(to right, #4A00E0, #8E2DE2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.meeting-info p {
+  margin: 10px 0;
+  opacity: 0.9;
+}
+
+.meeting-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.join-btn, .delete-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.join-btn:hover, .delete-btn:hover {
+  transform: scale(1.02);
+}
+
+.join-btn {
+  background: linear-gradient(to right, #11998e, #38ef7d);
+}
+
+.delete-btn {
+  background: linear-gradient(to right, #ff416c, #ff4b2b);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 50px 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  grid-column: 1 / -1;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.empty-state p {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.empty-state button {
+  padding: 12px 30px;
+  border-radius: 30px;
+  border: none;
+  background: linear-gradient(to right, #ff7e5f, #feb47b);
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  transition: transform 0.2s;
+}
+
+.empty-state button:hover {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .meetings-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .meeting-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .meeting-actions {
+    flex-direction: column;
+  }
+}

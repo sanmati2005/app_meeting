@@ -1,0 +1,283 @@
+.sentiment-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: var(--text-primary);
+}
+
+.sentiment-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 20px;
+}
+
+.sentiment-header h2 {
+  font-size: 2rem;
+  margin: 0 0 15px 0;
+  background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.sentiment-header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.sentiment-overview {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  padding: 30px;
+  margin-bottom: 40px;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+}
+
+.sentiment-overview h3 {
+  margin: 0 0 25px 0;
+  color: var(--accent-primary);
+  text-align: center;
+}
+
+.sentiment-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.sentiment-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+}
+
+.bar-container {
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 1s ease-in-out;
+}
+
+.bar.positive {
+  background: linear-gradient(to right, #11998e, #38ef7d);
+}
+
+.bar.neutral {
+  background: linear-gradient(to right, #f7971e, #ffd200);
+}
+
+.bar.negative {
+  background: linear-gradient(to right, #ff416c, #ff4b2b);
+}
+
+.sentiment-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.participants-sentiment, .key-moments {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  padding: 30px;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+}
+
+.participants-sentiment h3, .key-moments h3 {
+  margin: 0 0 25px 0;
+  color: var(--accent-primary);
+  text-align: center;
+}
+
+.participants-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.participant-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  padding: 20px;
+  transition: transform 0.3s;
+}
+
+.participant-card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.participant-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.participant-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.participant-info {
+  flex: 1;
+}
+
+.participant-name {
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.sentiment-score {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.sentiment-icon {
+  font-size: 1.2rem;
+}
+
+.sentiment-value {
+  font-weight: bold;
+}
+
+.sentiment-indicator {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.sentiment-level {
+  height: 100%;
+  border-radius: 3px;
+}
+
+.moments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.moment-item {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  transition: background 0.3s;
+}
+
+.moment-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.moment-time {
+  font-weight: bold;
+  color: var(--accent-primary);
+  min-width: 50px;
+}
+
+.moment-content {
+  flex: 1;
+}
+
+.moment-sentiment {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.sentiment-text {
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.moment-description {
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+.sentiment-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  padding: 15px 30px;
+  border-radius: 30px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.action-btn.generate-report {
+  background: linear-gradient(to right, #4A00E0, #8E2DE2);
+  color: white;
+}
+
+.action-btn.export-data {
+  background: linear-gradient(to right, #11998e, #38ef7d);
+  color: white;
+}
+
+.action-btn:hover {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .sentiment-details {
+    grid-template-columns: 1fr;
+  }
+  
+  .participants-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .moment-item {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .sentiment-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

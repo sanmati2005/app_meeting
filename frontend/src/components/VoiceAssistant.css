@@ -1,0 +1,267 @@
+.voice-assistant-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: var(--text-primary);
+}
+
+.assistant-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 20px;
+}
+
+.assistant-header h2 {
+  font-size: 2rem;
+  margin: 0 0 15px 0;
+  background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.assistant-header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.assistant-main {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.voice-controls {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  padding: 30px;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+}
+
+.voice-profile-selector {
+  margin-bottom: 30px;
+}
+
+.voice-profile-selector label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.profile-select {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  font-size: 1rem;
+  outline: none;
+}
+
+.microphone-control {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.mic-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 25px;
+  border-radius: 15px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: 100%;
+}
+
+.mic-btn.start {
+  background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+  color: white;
+}
+
+.mic-btn.stop {
+  background: linear-gradient(to right, #ff416c, #ff4b2b);
+  color: white;
+}
+
+.mic-btn:hover {
+  transform: scale(1.02);
+}
+
+.mic-icon {
+  font-size: 2rem;
+}
+
+.transcript-display {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  padding: 20px;
+}
+
+.transcript-label {
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: var(--accent-primary);
+}
+
+.transcript-text {
+  min-height: 60px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.execute-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(to right, #11998e, #38ef7d);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.execute-btn:hover {
+  transform: scale(1.02);
+}
+
+.assistant-chat {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  padding: 30px;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  max-height: 400px;
+}
+
+.message {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 15px;
+}
+
+.message.assistant {
+  background: rgba(74, 0, 224, 0.2);
+}
+
+.message.user {
+  background: rgba(255, 126, 95, 0.2);
+}
+
+.message.reminder {
+  background: rgba(247, 151, 30, 0.2);
+}
+
+.message.suggestion {
+  background: rgba(17, 153, 142, 0.2);
+}
+
+.avatar {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.message-content {
+  flex: 1;
+}
+
+.message-text {
+  line-height: 1.5;
+}
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+.action-btn {
+  padding: 15px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.action-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.02);
+}
+
+.speaking-indicator {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 30px;
+  padding: 15px 25px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+  z-index: 1000;
+}
+
+.pulse-animation {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(to right, #11998e, #38ef7d);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(17, 153, 142, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(17, 153, 142, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(17, 153, 142, 0); }
+}
+
+.indicator-text {
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .assistant-main {
+    grid-template-columns: 1fr;
+  }
+  
+  .quick-actions {
+    grid-template-columns: 1fr;
+  }
+  
+  .speaking-indicator {
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+  }
+}

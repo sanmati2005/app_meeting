@@ -1,0 +1,126 @@
+.recording-container {
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.recording-header h3 {
+  margin: 0 0 20px 0;
+  color: var(--accent-primary);
+}
+
+.recording-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.record-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 25px;
+  border-radius: 30px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.record-btn.start {
+  background: linear-gradient(to right, #ff416c, #ff4b2b);
+  color: white;
+}
+
+.record-btn.stop {
+  background: linear-gradient(to right, #11998e, #38ef7d);
+  color: white;
+}
+
+.record-btn:hover {
+  transform: scale(1.05);
+}
+
+.recording-timer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px 20px;
+  border-radius: 30px;
+}
+
+.timer-icon {
+  font-size: 1.2rem;
+}
+
+.timer-text {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.transcript-section, .summary-section, .action-items-section {
+  margin-bottom: 30px;
+}
+
+.transcript-section h4, .summary-section h4, .action-items-section h4 {
+  margin: 0 0 15px 0;
+  color: var(--accent-primary);
+}
+
+.transcript-content, .summary-content {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 20px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.transcript-content pre, .summary-content pre {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: inherit;
+  line-height: 1.6;
+}
+
+.action-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.action-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.item-task {
+  font-weight: 500;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.item-details {
+  display: flex;
+  gap: 20px;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .recording-controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .item-details {
+    flex-direction: column;
+    gap: 5px;
+  }
+}

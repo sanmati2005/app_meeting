@@ -1,0 +1,329 @@
+.calendar-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: var(--text-primary);
+}
+
+.calendar-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 20px;
+}
+
+.calendar-header h2 {
+  font-size: 2rem;
+  margin: 0 0 15px 0;
+  background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.calendar-header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.calendar-sections {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 30px;
+}
+
+.calendar-connections {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  padding: 30px;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+}
+
+.calendar-connections h3 {
+  margin: 0 0 20px 0;
+  color: var(--accent-primary);
+}
+
+.calendars-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.calendar-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.calendar-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.calendar-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.calendar-name {
+  font-weight: 500;
+}
+
+.toggle-btn {
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.toggle-btn.connected {
+  background: linear-gradient(to right, #11998e, #38ef7d);
+  color: white;
+}
+
+.toggle-btn.disconnected {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.toggle-btn:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+.upcoming-meetings {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  padding: 30px;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+}
+
+.meetings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.meetings-header h3 {
+  margin: 0;
+  color: var(--accent-primary);
+}
+
+.schedule-btn {
+  padding: 10px 20px;
+  border-radius: 30px;
+  border: none;
+  background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.schedule-btn:hover {
+  transform: scale(1.05);
+}
+
+.schedule-form {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  padding: 25px;
+  margin-bottom: 30px;
+}
+
+.schedule-form h4 {
+  margin: 0 0 20px 0;
+  color: var(--accent-primary);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+.form-input, .form-textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  font-size: 1rem;
+  outline: none;
+}
+
+.form-input::placeholder, .form-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.cancel-btn, .schedule-submit-btn {
+  padding: 12px 25px;
+  border-radius: 30px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.cancel-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.schedule-submit-btn {
+  background: linear-gradient(to right, #11998e, #38ef7d);
+  color: white;
+}
+
+.cancel-btn:hover, .schedule-submit-btn:hover {
+  transform: scale(1.05);
+}
+
+.meetings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.meeting-item {
+  display: flex;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  transition: transform 0.3s;
+}
+
+.meeting-item:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.meeting-time {
+  text-align: center;
+  padding-right: 20px;
+  border-right: 1px solid var(--border-color);
+  margin-right: 20px;
+  min-width: 100px;
+}
+
+.date {
+  font-weight: bold;
+  color: var(--accent-primary);
+  margin-bottom: 5px;
+}
+
+.time {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.meeting-details {
+  flex: 1;
+  padding-right: 20px;
+}
+
+.meeting-details h4 {
+  margin: 0 0 10px 0;
+  font-size: 1.2rem;
+}
+
+.meeting-details p {
+  margin: 0 0 15px 0;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+.meeting-meta {
+  display: flex;
+  gap: 15px;
+}
+
+.duration, .calendar-name {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.meeting-actions {
+  display: flex;
+  align-items: center;
+}
+
+.join-btn {
+  padding: 10px 20px;
+  border-radius: 30px;
+  border: none;
+  background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.join-btn:hover {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .calendar-sections {
+    grid-template-columns: 1fr;
+  }
+  
+  .meeting-item {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .meeting-time {
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+    margin-right: 0;
+    padding-right: 0;
+  }
+  
+  .meeting-details {
+    padding-right: 0;
+  }
+  
+  .meeting-actions {
+    align-self: flex-start;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
