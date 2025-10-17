@@ -11,14 +11,22 @@
   ],
   "routes": [
     {
-      "src": "^/assets/(.*)$",
+      "src": "/assets/(.*)",
       "headers": {
         "cache-control": "max-age=31536000, immutable"
       },
       "dest": "/assets/$1"
     },
     {
-      "src": "^/([^./]*)?/?([^/]*)/?$",
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/socket.io/(.*)",
+      "dest": "/socket.io/$1"
+    },
+    {
+      "src": "/(.*)",
       "dest": "/index.html"
     }
   ]
