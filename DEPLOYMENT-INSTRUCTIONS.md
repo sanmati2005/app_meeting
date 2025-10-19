@@ -4,7 +4,7 @@
 1. GitHub account (sanmatipt.123@gmail.com)
 2. MongoDB Atlas account
 3. Vercel account (for frontend)
-4. Heroku account (for backend)
+4. Render.com account (for backend - Heroku alternative)
 
 ## MongoDB Atlas Setup
 1. Create a MongoDB Atlas account if you haven't already
@@ -33,107 +33,39 @@
    - Build Command: npm run build
    - Output Directory: dist
 5. Add environment variables if needed:
-   - VITE_BACKEND_URL: https://your-backend-app-name.herokuapp.com
+   - VITE_BACKEND_URL: https://your-backend-app-name.onrender.com
 
-## Backend Deployment (Heroku via GitHub)
+## Backend Deployment (Render.com - Heroku Alternative)
 
-### Option 1: Deploy using Heroku Dashboard (Recommended)
+### Deploy using Render Dashboard (Recommended)
 
-1. Create a new app on Heroku dashboard:
-   - Go to https://dashboard.heroku.com/new-app
-   - Click "Create new app"
-   - Give your app a unique name
-   - Select your region
+1. Create a new account at https://render.com/ using your GitHub account
+2. Click "New Web Service"
+3. Connect your GitHub repository
+4. Configure your web service:
+   - Name: meeting-app-backend
+   - Region: Choose the closest to your users
+   - Branch: main
+   - Root Directory: backend
+   - Environment: Node
+   - Build Command: npm install
+   - Start Command: npm start
+5. Click "Advanced" and add the following environment variables:
+   - `MONGO_URI`: Your MongoDB Atlas connection string
+   - `JWT_SECRET`: A secure secret key (different from your local one)
+   - `JWT_EXPIRE`: 7d
+   - `NODE_ENV`: production
+6. Click "Create Web Service"
 
-2. Connect to GitHub:
-   - In your Heroku app dashboard, go to the "Deploy" tab
-   - Select "GitHub" as the deployment method
-   - Connect your GitHub account (sanmatipt.123@gmail.com)
-   - Search for your repository and connect it
-   - Enable automatic deploys from the main branch
+### Deploy using render.yaml (Alternative)
 
-3. Set environment variables in Heroku:
-   - In your Heroku app dashboard, go to the "Settings" tab
-   - Click "Reveal Config Vars"
-   - Add the following config vars (replace with your actual values):
-     - `MONGO_URI`: mongodb+srv://username:password@cluster0.abc123.mongodb.net/meetingapp?retryWrites=true&w=majority
-     - `JWT_SECRET`: your_secure_jwt_secret_key_12345 (use a different, more secure secret for production)
-     - `JWT_EXPIRE`: 7d
-     - `NODE_ENV`: production
-     - `PORT`: 5001 (Heroku will automatically set this, but you can specify it)
+If you've added the render.yaml file to your repository:
 
-4. Deploy:
-   - Either manually deploy by clicking "Deploy Branch" or wait for automatic deployment
-
-### Option 2: Deploy using Heroku Git (If CLI login works)
-
-1. Update the `.env.production` file in the backend directory with your actual values:
-   ```
-   MONGO_URI=your_actual_mongodb_atlas_connection_string
-   JWT_SECRET=your_secure_jwt_secret
-   JWT_EXPIRE=7d
-   PORT=5001
-   ```
-
-2. Commit your changes:
-   ```bash
-   git add .
-   git commit -m "Prepare for Heroku deployment"
-   ```
-
-3. Set up Heroku remote:
-   ```bash
-   heroku git:remote -a your-heroku-app-name
-   ```
-
-4. Set environment variables on Heroku:
-   ```bash
-   heroku config:set MONGO_URI="your_actual_mongodb_atlas_connection_string"
-   heroku config:set JWT_SECRET="your_secure_jwt_secret"
-   heroku config:set JWT_EXPIRE=7d
-   heroku config:set NODE_ENV=production
-   ```
-
-5. Deploy to Heroku:
-   ```bash
-   git push heroku main
-   ```
-
-### Option 3: Deploy using Heroku Container Registry
-
-1. Install Heroku CLI and Docker
-2. Log in to Heroku:
-   ```bash
-   heroku login
-   ```
-
-3. Log in to Heroku Container Registry:
-   ```bash
-   heroku container:login
-   ```
-
-4. Create a Heroku app:
-   ```bash
-   heroku create your-app-name
-   ```
-
-5. Set environment variables:
-   ```bash
-   heroku config:set MONGO_URI="your_actual_mongodb_atlas_connection_string"
-   heroku config:set JWT_SECRET="your_secure_jwt_secret"
-   heroku config:set JWT_EXPIRE=7d
-   heroku config:set NODE_ENV=production
-   ```
-
-6. Push the Docker image:
-   ```bash
-   heroku container:push web -a your-app-name
-   ```
-
-7. Release the image:
-   ```bash
-   heroku container:release web -a your-app-name
-   ```
+1. Create a new account at https://render.com/ using your GitHub account
+2. Click "New Web Service"
+3. Connect your GitHub repository
+4. Render will automatically detect the render.yaml file
+5. Review the settings and click "Create Web Service"
 
 ## Environment Variables Explained
 
@@ -141,7 +73,6 @@
 - `JWT_SECRET`: A secure secret key for JWT tokens. Use a long, random string for production.
 - `JWT_EXPIRE`: Expiration time for JWT tokens (e.g., 7d for 7 days).
 - `NODE_ENV`: Set to "production" for production environment.
-- `PORT`: Port number (Heroku automatically sets this, defaults to 5001 if not set).
 
 ## MongoDB Atlas Connection String Format
 
@@ -155,24 +86,14 @@ Replace:
 - `password`: Your MongoDB Atlas database user password
 - `cluster0.abc123.mongodb.net`: Your actual cluster address
 
-## Troubleshooting
-
-If you're having trouble logging into Heroku CLI:
-1. Try using the Heroku Dashboard method (Option 1 above) - this doesn't require CLI login
-2. Make sure you're using the correct Heroku credentials
-3. Check if two-factor authentication is enabled
-4. Try resetting your Heroku password
-5. Clear your browser cache and cookies before logging in
-6. Try logging in through an incognito/private browser window
-
 ## Post-Deployment
 
-1. Check the logs in Heroku dashboard:
-   - Go to your app in Heroku dashboard
-   - Click "More" > "View logs"
+1. Check the logs in Render dashboard:
+   - Go to your service in Render dashboard
+   - Click "Logs" to view real-time logs
 
 2. Test your API endpoints:
-   - Visit https://your-backend-app-name.herokuapp.com/
+   - Visit https://your-backend-app-name.onrender.com/
    - You should see "AI Meeting App Backend Server is running!"
 
 3. Test frontend:
@@ -182,15 +103,19 @@ If you're having trouble logging into Heroku CLI:
 ## Common Issues and Solutions
 
 1. **MongoDB Connection Error**:
-   - Ensure your MongoDB Atlas cluster allows connections from Heroku IPs (0.0.0.0/0)
+   - Ensure your MongoDB Atlas cluster allows connections from Render IPs (0.0.0.0/0)
    - Double-check your MONGO_URI format and credentials
 
 2. **Environment Variables Not Set**:
-   - Make sure all required environment variables are set in Heroku Config Vars
+   - Make sure all required environment variables are set in Render Environment Variables
 
 3. **CORS Issues**:
    - The backend is already configured to allow all origins, but you can adjust the cors settings in server.js if needed
 
-4. **Port Issues**:
-   - Heroku dynamically assigns ports through the PORT environment variable
-   - The server.js file is already configured to use process.env.PORT
+4. **Build Failures**:
+   - Check the build logs in Render dashboard
+   - Ensure all dependencies are correctly listed in package.json
+
+5. **Application Crashes**:
+   - Check the runtime logs in Render dashboard
+   - Ensure your MONGO_URI is correctly formatted and accessible
