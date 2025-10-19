@@ -1,7 +1,7 @@
 # Deployment Instructions
 
 ## Prerequisites
-1. GitHub account
+1. GitHub account (sanmatipt.123@gmail.com)
 2. MongoDB Atlas account
 3. Vercel account (for frontend)
 4. Heroku account (for backend)
@@ -48,18 +48,19 @@
 2. Connect to GitHub:
    - In your Heroku app dashboard, go to the "Deploy" tab
    - Select "GitHub" as the deployment method
-   - Connect your GitHub account
+   - Connect your GitHub account (sanmatipt.123@gmail.com)
    - Search for your repository and connect it
    - Enable automatic deploys from the main branch
 
 3. Set environment variables in Heroku:
    - In your Heroku app dashboard, go to the "Settings" tab
    - Click "Reveal Config Vars"
-   - Add the following config vars:
-     - `MONGO_URI`: Your MongoDB Atlas connection string
-     - `JWT_SECRET`: A secure secret key for JWT tokens
+   - Add the following config vars (replace with your actual values):
+     - `MONGO_URI`: mongodb+srv://username:password@cluster0.abc123.mongodb.net/meetingapp?retryWrites=true&w=majority
+     - `JWT_SECRET`: your_secure_jwt_secret_key_12345 (use a different, more secure secret for production)
      - `JWT_EXPIRE`: 7d
      - `NODE_ENV`: production
+     - `PORT`: 5001 (Heroku will automatically set this, but you can specify it)
 
 4. Deploy:
    - Either manually deploy by clicking "Deploy Branch" or wait for automatic deployment
@@ -134,38 +135,62 @@
    heroku container:release web -a your-app-name
    ```
 
-## Post-Deployment
+## Environment Variables Explained
 
-1. Check the logs:
-   ```bash
-   heroku logs --tail
-   ```
+- `MONGO_URI`: Your MongoDB Atlas connection string. Replace username, password, and cluster details with your actual values.
+- `JWT_SECRET`: A secure secret key for JWT tokens. Use a long, random string for production.
+- `JWT_EXPIRE`: Expiration time for JWT tokens (e.g., 7d for 7 days).
+- `NODE_ENV`: Set to "production" for production environment.
+- `PORT`: Port number (Heroku automatically sets this, defaults to 5001 if not set).
 
-2. Open the app:
-   ```bash
-   heroku open
-   ```
+## MongoDB Atlas Connection String Format
 
-3. Scale the dynos if needed:
-   ```bash
-   heroku ps:scale web=1
-   ```
+Your MongoDB Atlas connection string should look like this:
+```
+mongodb+srv://username:password@cluster0.abc123.mongodb.net/meetingapp?retryWrites=true&w=majority
+```
 
-## Environment Variables
-
-Make sure to set the following environment variables in your Heroku app:
-
-- `MONGO_URI`: Your MongoDB Atlas connection string
-- `JWT_SECRET`: A secure secret key for JWT tokens
-- `JWT_EXPIRE`: Expiration time for JWT tokens (e.g., 7d)
-- `NODE_ENV`: production
-- `PORT`: Port number (defaults to 5001 if not set)
+Replace:
+- `username`: Your MongoDB Atlas database user
+- `password`: Your MongoDB Atlas database user password
+- `cluster0.abc123.mongodb.net`: Your actual cluster address
 
 ## Troubleshooting
 
 If you're having trouble logging into Heroku CLI:
-1. Try using the Heroku Dashboard method (Option 1 above)
+1. Try using the Heroku Dashboard method (Option 1 above) - this doesn't require CLI login
 2. Make sure you're using the correct Heroku credentials
 3. Check if two-factor authentication is enabled
 4. Try resetting your Heroku password
 5. Clear your browser cache and cookies before logging in
+6. Try logging in through an incognito/private browser window
+
+## Post-Deployment
+
+1. Check the logs in Heroku dashboard:
+   - Go to your app in Heroku dashboard
+   - Click "More" > "View logs"
+
+2. Test your API endpoints:
+   - Visit https://your-backend-app-name.herokuapp.com/
+   - You should see "AI Meeting App Backend Server is running!"
+
+3. Test frontend:
+   - Visit your Vercel deployment URL
+   - Try logging in and accessing meeting features
+
+## Common Issues and Solutions
+
+1. **MongoDB Connection Error**:
+   - Ensure your MongoDB Atlas cluster allows connections from Heroku IPs (0.0.0.0/0)
+   - Double-check your MONGO_URI format and credentials
+
+2. **Environment Variables Not Set**:
+   - Make sure all required environment variables are set in Heroku Config Vars
+
+3. **CORS Issues**:
+   - The backend is already configured to allow all origins, but you can adjust the cors settings in server.js if needed
+
+4. **Port Issues**:
+   - Heroku dynamically assigns ports through the PORT environment variable
+   - The server.js file is already configured to use process.env.PORT
