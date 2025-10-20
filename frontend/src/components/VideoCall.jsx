@@ -25,6 +25,11 @@ const VideoCall = () => {
   const navigate = useNavigate();
   const socketRef = useRef(null);
 
+  // Check if we're on a mobile device
+  const isMobileDevice = () => {
+    return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  };
+
   // Load meeting info
   useEffect(() => {
     const fetchMeetingInfo = async () => {
@@ -76,10 +81,19 @@ const VideoCall = () => {
   // Get user media
   const getUserMedia = async () => {
     try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
+      // Check if we're on a mobile device
+      const isMobile = isMobileDevice();
+      
+      const mediaConstraints = {
+        video: {
+          facingMode: isMobile ? { ideal: "user" } : true, // Prefer front camera on mobile
+          width: isMobile ? { ideal: 1280 } : undefined,
+          height: isMobile ? { ideal: 720 } : undefined
+        },
         audio: true
-      });
+      };
+      
+      const mediaStream = await navigator.mediaDevices.getUserMedia(mediaConstraints);
       setStream(mediaStream);
       if (userVideoRef.current) {
         userVideoRef.current.srcObject = mediaStream;
@@ -87,7 +101,13 @@ const VideoCall = () => {
       return mediaStream;
     } catch (error) {
       console.error('Error accessing media devices:', error);
-      alert('Could not access camera or microphone. Please check permissions and ensure you are using HTTPS or localhost.');
+      
+      // Provide more specific error messages for mobile users
+      if (isMobileDevice()) {
+        alert('Could not access camera or microphone. Please ensure you have granted permissions and that no other app is using the camera. On mobile devices, you may need to reload the page and allow camera access when prompted.');
+      } else {
+        alert('Could not access camera or microphone. Please check permissions and ensure you are using HTTPS or localhost.');
+      }
       return null;
     }
   };
@@ -99,13 +119,19 @@ const VideoCall = () => {
     console.log('Connecting to WebSocket server:', SOCKET_URL);
     
     // For production, we might need to use a different approach
+    // On mobile, we might want to adjust some settings for better battery usage
+    const isMobile = isMobileDevice();
+    
     socketRef.current = io(SOCKET_URL, {
       transports: ['websocket', 'polling'],
       withCredentials: true,
       timeout: 20000,
       reconnection: true,
       reconnectionAttempts: 5,
-      reconnectionDelay: 1000
+      reconnectionDelay: 1000,
+      // On mobile, we might want to reduce the ping interval to save battery
+      pingInterval: isMobile ? 60000 : 25000, // 60 seconds on mobile, 25 seconds on desktop
+      pingTimeout: isMobile ? 20000 : 5000    // 20 seconds on mobile, 5 seconds on desktop
     });
     
     socketRef.current.on('connect', () => {
@@ -121,6 +147,11 @@ const VideoCall = () => {
     
     socketRef.current.on('disconnect', (reason) => {
       console.log('WebSocket disconnected:', reason);
+      
+      // On mobile, automatic reconnection might not work as expected due to battery saving features
+      if (isMobile && reason === 'transport close') {
+        console.log('Mobile device may have suspended the connection due to battery saving');
+      }
     });
     
     socketRef.current.on('user-connected', (userId) => {
@@ -383,9 +414,84 @@ const VideoCall = () => {
   // Share screen
   const shareScreen = async () => {
     try {
-      const screenStream = await navigator.mediaDevices.getDisplayMedia({
-        video: true
-      });
+      // Check if we're on a mobile device
+      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      let screenStream;
+      
+      if (isMobile) {
+        // For mobile devices, we'll use a different approach
+        // Try to use getDisplayMedia if available
+        if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
+          try {
+            screenStream = await navigator.mediaDevices.getDisplayMedia({
+              video: true,
+              audio: false // Screen audio capture is not supported on most mobile browsers
+            });
+          } catch (mobileError) {
+            // If getDisplayMedia fails, show an alternative option
+            const userChoice = window.confirm(
+              'Screen sharing on mobile requires specific browser support. ' +
+              'As an alternative, you can: \n\n' +
+              '1. Turn off your camera and show content to your camera\n' +
+              '2. Use the file sharing feature (coming soon)\n\n' +
+              'Do you want to turn off your camera instead?'
+            );
+            
+            if (userChoice) {
+              // Turn off camera as an alternative
+              if (stream) {
+                const videoTrack = stream.getVideoTracks()[0];
+                if (videoTrack) {
+                  videoTrack.enabled = false;
+                  setIsVideoOff(true);
+                  
+                  // Notify other participants of video status change
+                  if (socketRef.current) {
+                    socketRef.current.emit('video-status-change', { roomId, userId, videoOff: true });
+                  }
+                  
+                  alert('Camera turned off. You can now show content to your camera.');
+                }
+              }
+            }
+            return;
+          }
+        } else {
+          // Fallback for mobile devices that don't support screen sharing
+          const userChoice = window.confirm(
+            'Screen sharing is not supported on your mobile browser. ' +
+            'As an alternative, you can: \n\n' +
+            '1. Turn off your camera and show content to your camera\n' +
+            '2. Use the file sharing feature (coming soon)\n\n' +
+            'Do you want to turn off your camera instead?'
+          );
+          
+          if (userChoice) {
+            // Turn off camera as an alternative
+            if (stream) {
+              const videoTrack = stream.getVideoTracks()[0];
+              if (videoTrack) {
+                videoTrack.enabled = false;
+                setIsVideoOff(true);
+                
+                // Notify other participants of video status change
+                if (socketRef.current) {
+                  socketRef.current.emit('video-status-change', { roomId, userId, videoOff: true });
+                }
+                
+                alert('Camera turned off. You can now show content to your camera.');
+              }
+            }
+          }
+          return;
+        }
+      } else {
+        // Desktop implementation
+        screenStream = await navigator.mediaDevices.getDisplayMedia({
+          video: true
+        });
+      }
       
       if (userVideoRef.current) {
         userVideoRef.current.srcObject = screenStream;
@@ -403,10 +509,21 @@ const VideoCall = () => {
           if (stream && userVideoRef.current) {
             userVideoRef.current.srcObject = stream;
           }
+          
+          // Re-enable the video button
+          setIsVideoOff(false);
         };
       }
     } catch (error) {
       console.error('Error sharing screen:', error);
+      // Handle specific mobile error cases
+      if (error.name === 'NotAllowedError') {
+        alert('Screen sharing permission was denied. Please allow screen sharing to proceed.');
+      } else if (error.name === 'NotFoundError') {
+        alert('No screen sharing sources found. This feature may not be supported on your device.');
+      } else {
+        alert('Error sharing screen: ' + (error.message || 'Unknown error'));
+      }
     }
   };
 
@@ -667,6 +784,10 @@ const VideoCall = () => {
   // Update participant durations periodically
   useEffect(() => {
     if (joined && participants.length > 0) {
+      // Use a more frequent update interval for better real-time experience
+      // But be mindful of mobile battery usage
+      const updateInterval = isMobileDevice() ? 2000 : 1000; // 2 seconds on mobile, 1 second on desktop
+      
       const interval = setInterval(() => {
         setParticipants(prev => 
           prev.map(participant => {
@@ -678,11 +799,11 @@ const VideoCall = () => {
             return participant;
           })
         );
-      }, 1000); // Update every second
+      }, updateInterval);
       
       return () => clearInterval(interval);
     }
-  }, [joined, participants]);
+  }, [joined, participants, isMobileDevice]);
 
   useEffect(() => {
     if (roomId && !loading) {
@@ -793,7 +914,12 @@ const VideoCall = () => {
         <button className="control-button video" onClick={toggleVideo}>
           {isVideoOff ? '🎥 Start Video' : '📷 Stop Video'}
         </button>
-        <button className="control-button share" onClick={shareScreen}>💻 Share Screen</button>
+        {/* Only show screen share button if supported */}
+        {(!isMobileDevice() || (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia)) && (
+          <button className="control-button share" onClick={shareScreen}>
+            💻 {isMobileDevice() ? 'Share Content' : 'Share Screen'}
+          </button>
+        )}
         <button className="control-button participants" onClick={() => setShowParticipants(!showParticipants)}>
           👥 Participants ({participants.length})
         </button>
