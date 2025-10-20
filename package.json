@@ -4,7 +4,7 @@
   "description": "AI-powered video meeting application",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"npm run dev:memory --prefix backend\" \"npm run dev --prefix frontend\"",
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
     "build": "npm run build --prefix frontend",
     "start": "npm start --prefix backend",
     "test": "concurrently \"npm test --prefix backend\" \"npm test --prefix frontend\"",

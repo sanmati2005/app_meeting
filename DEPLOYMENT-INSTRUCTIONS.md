@@ -32,7 +32,11 @@
    - Root Directory: frontend
    - Build Command: npm run build
    - Output Directory: dist
-5. Add environment variables if needed:
+5. If Vercel doesn't automatically detect the settings, manually configure:
+   - Build Command: `npm run build`
+   - Root Directory: `frontend`
+   - Output Directory: `dist`
+6. Add environment variables if needed:
    - VITE_BACKEND_URL: https://your-backend-app-name.onrender.com
 
 ## Backend Deployment (Render.com - Heroku Alternative)
@@ -115,7 +119,32 @@ Replace:
 4. **Build Failures**:
    - Check the build logs in Render dashboard
    - Ensure all dependencies are correctly listed in package.json
+   - For Vercel, make sure the build command is set to `npm run build` (with a space)
 
 5. **Application Crashes**:
    - Check the runtime logs in Render dashboard
    - Ensure your MONGO_URI is correctly formatted and accessible
+
+## Troubleshooting Vercel Deployment
+
+If you're getting "Error: Command "npm run build" exited with 126", try these steps:
+
+1. In your Vercel project settings:
+   - Go to your project dashboard
+   - Click "Settings" → "General"
+   - Under "Build & Development Settings", make sure:
+     - Build Command: `npm run build` (with space)
+     - Root Directory: `frontend`
+     - Output Directory: `dist`
+
+2. If the issue persists:
+   - Delete the project from Vercel
+   - Re-import the project
+   - Manually set the build settings during import
+
+3. Ensure your package.json scripts section includes:
+   ```json
+   "scripts": {
+     "build": "vite build"
+   }
+   ```
