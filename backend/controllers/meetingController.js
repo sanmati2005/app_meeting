@@ -1,5 +1,4 @@
 import Meeting from '../models/Meeting.js';
-import crypto from 'crypto';
 
 // Create a new meeting
 const createMeeting = async (req, res) => {
@@ -398,6 +397,117 @@ const getParticipantAnalytics = async (req, res) => {
   }
 };
 
+// Enhanced analytics for user engagement tracking
+const getUserEngagementStats = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    
+    // Find all meetings where this user participated
+    const meetings = await Meeting.find({
+      'participants.user': userId
+    }).populate('host', 'name email');
+    
+    // Calculate engagement statistics
+    let totalMeetings = 0;
+    let totalTime = 0; // in seconds
+    let weeklyPattern = {
+      monday: 0,
+      tuesday: 0,
+      wednesday: 0,
+      thursday: 0,
+      friday: 0,
+      saturday: 0,
+      sunday: 0
+    };
+    
+    const meetingHours = {}; // Track usage by hour
+    
+    for (const meeting of meetings) {
+      totalMeetings++;
+      
+      // Find this user's participation data
+      const participant = meeting.participants.find(p => 
+        p.user && p.user._id.toString() === userId
+      );
+      
+      if (participant && participant.joinedAt) {
+        let duration = 0;
+        
+        if (participant.leftAt) {
+          // Calculate completed meeting duration
+          const durationMs = new Date(participant.leftAt) - new Date(participant.joinedAt);
+          duration = Math.floor(durationMs / 1000);
+        } else if (meeting.status === 'completed') {
+          // If meeting is completed but no leave time recorded, use scheduled duration
+          duration = meeting.duration * 60; // Convert minutes to seconds
+        } else {
+          // For ongoing meetings, skip for now or estimate
+          continue;
+        }
+        
+        totalTime += duration;
+        
+        // Track weekly pattern
+        const joinDate = new Date(participant.joinedAt);
+        const dayOfWeek = joinDate.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+        if (weeklyPattern[dayOfWeek] !== undefined) {
+          weeklyPattern[dayOfWeek] += 1;
+        }
+        
+        // Track hourly pattern
+        const hour = joinDate.getHours();
+        meetingHours[hour] = (meetingHours[hour] || 0) + 1;
+      }
+    }
+    
+    // Calculate average meeting time
+    const avgMeetingTime = totalMeetings > 0 ? Math.floor(totalTime / totalMeetings) : 0;
+    
+    // Find peak hours (most active hours)
+    const peakHours = Object.entries(meetingHours)
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 3)
+      .map(([hour]) => parseInt(hour));
+    
+    res.status(200).json({
+      success: true,
+      stats: {
+        totalMeetings,
+        totalTime, // in seconds
+        avgMeetingTime, // in seconds
+        weeklyPattern,
+        peakHours,
+        formatted: {
+          totalMeetings,
+          totalTime: formatDuration(totalTime),
+          avgMeetingTime: formatDuration(avgMeetingTime)
+        }
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
+// Helper function to format duration
+const formatDuration = (seconds) => {
+  const hrs = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+  
+  if (hrs > 0) {
+    return `${hrs}h ${mins}m ${secs}s`;
+  } else if (mins > 0) {
+    return `${mins}m ${secs}s`;
+  } else {
+    return `${secs}s`;
+  }
+};
+
 // Mute/unmute participant
 const muteParticipant = async (req, res) => {
   try {
@@ -695,6 +805,7 @@ export {
   updateParticipantJoinTime,
   updateParticipantLeaveTime,
   getParticipantAnalytics,
+  getUserEngagementStats,
   muteParticipant,
   removeParticipant,
   spotlightParticipant,

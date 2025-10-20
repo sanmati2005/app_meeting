@@ -160,6 +160,21 @@ class ApiService {
       },
     });
   }
+
+  // Analytics endpoints
+  async getUserEngagementStats() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+    
+    return this.fetch('/api/meetings/analytics/user', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+  }
 }
 
 export default new ApiService();

@@ -6,6 +6,7 @@ const AIFeatures = () => {
   const [activeFeature, setActiveFeature] = useState('background');
   const [analyticsData, setAnalyticsData] = useState(null);
   const [participantData, setParticipantData] = useState([]);
+  const [userStats, setUserStats] = useState(null); // Add user stats state
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -20,6 +21,16 @@ const AIFeatures = () => {
     try {
       setLoading(true);
       setError('');
+      
+      // Load user engagement stats
+      try {
+        const statsResponse = await api.getUserEngagementStats();
+        if (statsResponse.success) {
+          setUserStats(statsResponse.stats);
+        }
+      } catch (statsError) {
+        console.log('Could not load user stats:', statsError);
+      }
       
       // Get current meeting ID from localStorage or URL
       const meetingId = localStorage.getItem('currentMeetingId');
@@ -227,6 +238,45 @@ const AIFeatures = () => {
                     <p>Effectiveness</p>
                   </div>
                 </div>
+                
+                {/* User Stats Section */}
+                {userStats && (
+                  <div className="user-stats">
+                    <h4>Your Meeting Statistics</h4>
+                    <div className="stats-grid">
+                      <div className="stat-card">
+                        <h3>{userStats.totalMeetings}</h3>
+                        <p>Total Meetings</p>
+                      </div>
+                      <div className="stat-card">
+                        <h3>{userStats.formatted.totalTime}</h3>
+                        <p>Total Time</p>
+                      </div>
+                      <div className="stat-card">
+                        <h3>{userStats.formatted.avgMeetingTime}</h3>
+                        <p>Avg. Meeting Time</p>
+                      </div>
+                    </div>
+                    
+                    <div className="pattern-section">
+                      <h4>Usage Patterns</h4>
+                      <div className="pattern-grid">
+                        <div className="pattern-item">
+                          <span>Peak Hours:</span>
+                          <span>{userStats.peakHours.join(', ')}:00</span>
+                        </div>
+                        <div className="pattern-item">
+                          <span>Most Active Day:</span>
+                          <span>{
+                            Object.entries(userStats.weeklyPattern)
+                              .sort(([,a], [,b]) => b - a)[0]?.[0] || 'N/A'
+                          }</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
                 <div className="sentiment-chart">
                   <div className="chart-header">
                     <h4>Meeting Sentiment Analysis</h4>

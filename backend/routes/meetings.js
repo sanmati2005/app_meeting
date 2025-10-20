@@ -13,7 +13,8 @@ import {
   toggleHandRaise,
   updateParticipantJoinTime,
   updateParticipantLeaveTime,
-  getParticipantAnalytics
+  getParticipantAnalytics,
+  getUserEngagementStats // Add this import
 } from '../controllers/meetingController.js';
 import { protect } from '../middleware/auth.js';
 
@@ -41,7 +42,8 @@ router.put('/:id/participant/:participantId/hand', protect, toggleHandRaise);
 router.put('/:id/participant/:participantId/join-time', protect, updateParticipantJoinTime);
 router.put('/:id/participant/:participantId/leave-time', protect, updateParticipantLeaveTime);
 
-// Analytics route
+// Analytics routes
 router.get('/:id/analytics', protect, getParticipantAnalytics);
+router.get('/analytics/user', protect, getUserEngagementStats); // Add this new route
 
 export default router;
