@@ -10,9 +10,11 @@ export default defineConfig(({ mode }) => {
   
   return {
     plugins: [react()],
+    // Mobile-friendly development server settings
     server: {
       port: 3002,
       open: true,
+      host: true, // Allow external connections for mobile testing
       proxy: {
         '/api': {
           target: backendUrl,

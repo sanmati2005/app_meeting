@@ -355,18 +355,76 @@
 }
 
 @media (max-width: 768px) {
+  .ai-features-container {
+    padding: 15px;
+  }
+  
+  .features-header {
+    margin-bottom: 30px;
+    padding: 15px;
+  }
+  
+  .features-header h2 {
+    font-size: 2rem;
+  }
+  
+  .features-header p {
+    font-size: 1rem;
+  }
+  
   .features-navigation {
     flex-direction: column;
     align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
   }
   
   .feature-tab {
     width: 100%;
     justify-content: center;
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+  
+  .feature-icon {
+    font-size: 1.2rem;
+  }
+  
+  .features-content {
+    padding: 20px;
+  }
+  
+  .feature-description h3 {
+    font-size: 1.5rem;
+  }
+  
+  .feature-description p {
+    font-size: 1rem;
   }
   
   .analytics-grid {
     grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .analytics-card {
+    padding: 20px;
+  }
+  
+  .metric-value {
+    font-size: 2rem;
+  }
+  
+  .metric-label {
+    font-size: 0.9rem;
+  }
+  
+  .participant-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .participant-card {
+    padding: 15px;
   }
   
   .sentiment-bar {
@@ -377,5 +435,40 @@
   .sentiment-bar span {
     width: auto;
     margin-bottom: 5px;
+  }
+  
+  .topics-list, .action-items {
+    padding: 15px;
+  }
+  
+  .topic-item, .action-item {
+    padding: 12px;
+  }
+  
+  .background-options {
+    gap: 15px;
+  }
+  
+  .background-option div {
+    width: 60px;
+    height: 45px;
+  }
+  
+  .video-placeholder {
+    height: 200px;
+  }
+  
+  .person-outline {
+    width: 100px;
+    height: 150px;
+  }
+  
+  .transcript-line {
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+  
+  .summary-section {
+    padding: 15px;
   }
 }

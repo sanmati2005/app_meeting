@@ -21,13 +21,26 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: process.env.NODE_ENV === 'production' 
-      ? ["https://app-meeting-25nw.vercel.app", "https://app-meeting-25nw.vercel.app/"] 
+      ? [
+          "https://app-meeting-25nw.vercel.app", 
+          "https://app-meeting-25nw.vercel.app/",
+          "https://app-meeting-2-lp0a.onrender.com",
+          "https://app-meeting-2-lp0a.onrender.com/"
+        ] 
       : "*",
     methods: ["GET", "POST"],
     credentials: true
   },
   transports: ['websocket', 'polling'],
-  allowEIO3: true
+  allowEIO3: true,
+  // Mobile-friendly settings
+  pingInterval: 60000,  // 60 seconds
+  pingTimeout: 20000,   // 20 seconds
+  upgradeTimeout: 30000, // 30 seconds
+  // Allow long polling for mobile networks
+  allowUpgrades: true,
+  // Reduce memory footprint
+  cleanupEmptyChildNamespaces: true
 });
 
 // Middleware
@@ -65,6 +78,16 @@ const participantSockets = new Map();
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
+  // Mobile device detection
+  const isMobile = socket.handshake.headers['user-agent'] && 
+    /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(socket.handshake.headers['user-agent']);
+  
+  // Set mobile-specific timeout values
+  if (isMobile) {
+    // Increase timeouts for mobile devices
+    socket.setTimeout && socket.setTimeout(120000); // 2 minutes
+  }
+
   // Handle room joining
   socket.on('join-room', async (roomId, userId) => {
     socket.join(roomId);
@@ -76,7 +99,8 @@ io.on('connection', (socket) => {
       userId,
       roomId,
       joinTime,
-      lastActive: joinTime
+      lastActive: joinTime,
+      isMobile: isMobile // Store mobile status
     });
     
     // Record socket ID for participant
@@ -127,6 +151,8 @@ io.on('connection', (socket) => {
     const participantData = activeParticipants.get(participantKey);
     if (participantData) {
       participantData.lastActive = new Date();
+      // For mobile devices, we might want to be more lenient with activity tracking
+      participantData.lastActivity = 'mute';
       activeParticipants.set(participantKey, participantData);
     }
   });
@@ -141,6 +167,8 @@ io.on('connection', (socket) => {
     const participantData = activeParticipants.get(participantKey);
     if (participantData) {
       participantData.lastActive = new Date();
+      // For mobile devices, we might want to be more lenient with activity tracking
+      participantData.lastActivity = 'video';
       activeParticipants.set(participantKey, participantData);
     }
   });
@@ -155,6 +183,8 @@ io.on('connection', (socket) => {
     const participantData = activeParticipants.get(participantKey);
     if (participantData) {
       participantData.lastActive = new Date();
+      // For mobile devices, we might want to be more lenient with activity tracking
+      participantData.lastActivity = 'hand-raise';
       activeParticipants.set(participantKey, participantData);
     }
   });

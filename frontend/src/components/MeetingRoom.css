@@ -2,7 +2,7 @@
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
-  color: white;
+  color: var(--text-primary);
 }
 
 .meeting-header {
@@ -14,7 +14,7 @@
   background: rgba(0, 0, 0, 0.3);
   border-radius: 15px;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
 }
 
 .meeting-header h2 {
@@ -65,6 +65,7 @@
   display: block;
   margin-bottom: 8px;
   font-weight: 500;
+  color: var(--text-primary);
 }
 
 .form-group input {
@@ -73,7 +74,7 @@
   border-radius: 10px;
   border: none;
   background: rgba(255, 255, 255, 0.1);
-  color: white;
+  color: var(--text-primary);
   font-size: 16px;
   outline: none;
 }
@@ -130,6 +131,7 @@
 .meeting-info p {
   margin: 10px 0;
   opacity: 0.9;
+  color: var(--text-primary);
 }
 
 .meeting-actions {
@@ -193,16 +195,79 @@
 }
 
 @media (max-width: 768px) {
-  .meetings-list {
-    grid-template-columns: 1fr;
+  .meeting-room-container {
+    padding: 15px;
   }
   
   .meeting-header {
     flex-direction: column;
     gap: 15px;
+    padding: 15px;
+  }
+  
+  .meeting-header h2 {
+    font-size: 1.8rem;
+  }
+  
+  .create-meeting-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    width: 100%;
+  }
+  
+  .meetings-list {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .meeting-card {
+    padding: 20px;
+  }
+  
+  .meeting-info h3 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+  }
+  
+  .meeting-info p {
+    font-size: 0.9rem;
+    margin: 8px 0;
   }
   
   .meeting-actions {
     flex-direction: column;
+    gap: 10px;
+  }
+  
+  .join-btn, .delete-btn {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+  
+  .create-meeting-form {
+    padding: 20px;
+  }
+  
+  .form-group input {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+  
+  .submit-btn {
+    padding: 12px;
+    font-size: 14px;
+  }
+  
+  .empty-state {
+    padding: 30px 15px;
+  }
+  
+  .empty-state p {
+    font-size: 16px;
+  }
+  
+  .empty-state button {
+    padding: 10px 25px;
+    font-size: 14px;
   }
 }

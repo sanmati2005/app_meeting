@@ -248,3 +248,69 @@
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .participant-list-container {
+    min-width: 90vw;
+    max-width: 95vw;
+    max-height: 70vh;
+    padding: 15px;
+  }
+  
+  .participant-header h3 {
+    font-size: 1.3rem;
+  }
+  
+  .participant-item {
+    padding: 12px 8px;
+  }
+  
+  .participant-avatar {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+    margin-right: 10px;
+  }
+  
+  .participant-name {
+    font-size: 0.9rem;
+    gap: 5px;
+  }
+  
+  .you-badge, .host-badge {
+    font-size: 0.6rem;
+    padding: 1px 6px;
+  }
+  
+  .participant-status {
+    font-size: 0.7rem;
+  }
+  
+  .participant-duration {
+    font-size: 0.6rem;
+  }
+  
+  .control-btn {
+    font-size: 1rem;
+    width: 25px;
+    height: 25px;
+    padding: 3px;
+  }
+  
+  .participant-actions {
+    min-width: 120px;
+    padding: 8px;
+  }
+  
+  .participant-actions button {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    margin-bottom: 3px;
+  }
+  
+  .invite-btn {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+}

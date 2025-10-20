@@ -19,7 +19,7 @@
     },
     {
       "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "dest": "https://app-meeting-2-lp0a.onrender.com/api/$1"
     },
     {
       "src": "/socket.io/(.*)",

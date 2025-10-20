@@ -237,15 +237,69 @@
 }
 
 @media (max-width: 768px) {
+  .host-controls-container {
+    padding: 15px;
+  }
+  
+  .controls-header {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .controls-header h3 {
+    font-size: 1.5rem;
+  }
+  
+  .controls-header p {
+    font-size: 1rem;
+  }
+  
   .main-controls {
     grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .control-btn {
+    padding: 20px;
+  }
+  
+  .btn-icon {
+    font-size: 1.5rem;
+  }
+  
+  .btn-label {
+    font-size: 0.9rem;
+  }
+  
+  .security-panel {
+    padding: 20px;
+  }
+  
+  .security-options {
+    gap: 12px;
+  }
+  
+  .security-option {
+    padding: 12px;
   }
   
   .security-actions {
     flex-direction: column;
+    gap: 12px;
+  }
+  
+  .security-action-btn {
+    padding: 12px;
+    font-size: 0.9rem;
   }
   
   .meeting-info {
     grid-template-columns: 1fr;
+    padding: 20px;
+    gap: 15px;
+  }
+  
+  .info-value {
+    font-size: 1.3rem;
   }
 }

@@ -20,6 +20,8 @@ const VideoCall = () => {
   const [isHost, setIsHost] = useState(false);
   const [transcript, setTranscript] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
+  const [isScreenSharing, setIsScreenSharing] = useState(false);
+  const [screenStream, setScreenStream] = useState(null);
   const userVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const navigate = useNavigate();
@@ -27,7 +29,62 @@ const VideoCall = () => {
 
   // Check if we're on a mobile device
   const isMobileDevice = () => {
-    return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+           (navigator.maxTouchPoints && navigator.maxTouchPoints > 1) ||
+           ('ontouchstart' in window);
+  };
+
+  // Check for iOS device specifically
+  const isIOS = () => {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent);
+  };
+
+  // Check for Android device specifically
+  const isAndroid = () => {
+    return /Android/.test(navigator.userAgent);
+  };
+
+  // Enhanced mobile browser detection
+  const getMobileBrowserType = () => {
+    const ua = navigator.userAgent;
+    if (/SamsungBrowser/i.test(ua)) return 'samsung';
+    if (/EdgA/i.test(ua)) return 'edge';
+    if (/FxiOS/i.test(ua)) return 'firefox';
+    if (/CriOS/i.test(ua)) return 'chrome';
+    if (/OPiOS/i.test(ua)) return 'opera';
+    if (/Safari/i.test(ua) && isIOS()) return 'safari';
+    return 'other';
+  };
+
+  // Check if screen sharing is supported
+  const isScreenSharingSupported = () => {
+    // Desktop browsers
+    if (!isMobileDevice()) {
+      return navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia;
+    }
+    
+    // Mobile browsers
+    if (isMobileDevice()) {
+      const browser = getMobileBrowserType();
+      
+      // Chrome on Android supports screen sharing
+      if (isAndroid() && browser === 'chrome') {
+        return navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia;
+      }
+      
+      // Safari on iOS has limited support
+      if (isIOS() && browser === 'safari') {
+        // iOS Safari 16+ has limited screen sharing support
+        const versionMatch = navigator.userAgent.match(/Version\/([0-9]+)/);
+        const version = versionMatch ? parseInt(versionMatch[1]) : 0;
+        return version >= 16 && navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia;
+      }
+      
+      // Other mobile browsers
+      return navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia;
+    }
+    
+    return false;
   };
 
   // Load meeting info
@@ -83,15 +140,48 @@ const VideoCall = () => {
     try {
       // Check if we're on a mobile device
       const isMobile = isMobileDevice();
+      const isIOSDevice = isIOS();
+      const isAndroidDevice = isAndroid();
       
-      const mediaConstraints = {
-        video: {
-          facingMode: isMobile ? { ideal: "user" } : true, // Prefer front camera on mobile
-          width: isMobile ? { ideal: 1280 } : undefined,
-          height: isMobile ? { ideal: 720 } : undefined
-        },
+      // Enhanced media constraints for mobile devices
+      let mediaConstraints = {
+        video: true,
         audio: true
       };
+      
+      if (isMobile) {
+        // Mobile-specific constraints
+        mediaConstraints = {
+          video: {
+            facingMode: { ideal: "user" }, // Prefer front camera on mobile
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          },
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          }
+        };
+        
+        // iOS-specific constraints
+        if (isIOSDevice) {
+          mediaConstraints.video = {
+            facingMode: { ideal: "user" },
+            width: { max: 1280 },
+            height: { max: 720 }
+          };
+        }
+        
+        // Android-specific constraints
+        if (isAndroidDevice) {
+          mediaConstraints.video = {
+            facingMode: { ideal: "user" },
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          };
+        }
+      }
       
       const mediaStream = await navigator.mediaDevices.getUserMedia(mediaConstraints);
       setStream(mediaStream);
@@ -104,7 +194,31 @@ const VideoCall = () => {
       
       // Provide more specific error messages for mobile users
       if (isMobileDevice()) {
-        alert('Could not access camera or microphone. Please ensure you have granted permissions and that no other app is using the camera. On mobile devices, you may need to reload the page and allow camera access when prompted.');
+        // Mobile-specific error handling
+        if (error.name === 'NotAllowedError') {
+          alert('Camera and microphone access was denied. Please enable camera and microphone permissions in your browser settings and reload the page.');
+        } else if (error.name === 'NotFoundError') {
+          alert('No camera or microphone found. Please ensure your device has these peripherals and they are not being used by another application.');
+        } else if (error.name === 'OverconstrainedError') {
+          // Try with less strict constraints
+          try {
+            const fallbackConstraints = {
+              video: { facingMode: 'user' },
+              audio: true
+            };
+            const mediaStream = await navigator.mediaDevices.getUserMedia(fallbackConstraints);
+            setStream(mediaStream);
+            if (userVideoRef.current) {
+              userVideoRef.current.srcObject = mediaStream;
+            }
+            return mediaStream;
+          } catch (fallbackError) {
+            alert('Could not access camera or microphone with your device\'s capabilities. Please check your device settings or try a different browser.');
+            return null;
+          }
+        } else {
+          alert('Could not access camera or microphone. Please ensure you have granted permissions and that no other app is using the camera. On mobile devices, you may need to reload the page and allow camera access when prompted.');
+        }
       } else {
         alert('Could not access camera or microphone. Please check permissions and ensure you are using HTTPS or localhost.');
       }
@@ -121,18 +235,38 @@ const VideoCall = () => {
     // For production, we might need to use a different approach
     // On mobile, we might want to adjust some settings for better battery usage
     const isMobile = isMobileDevice();
+    const isIOSDevice = isIOS();
     
-    socketRef.current = io(SOCKET_URL, {
+    // Enhanced WebSocket configuration for mobile devices
+    const socketOptions = {
       transports: ['websocket', 'polling'],
       withCredentials: true,
       timeout: 20000,
       reconnection: true,
-      reconnectionAttempts: 5,
+      reconnectionAttempts: 10, // More attempts on mobile
       reconnectionDelay: 1000,
-      // On mobile, we might want to reduce the ping interval to save battery
-      pingInterval: isMobile ? 60000 : 25000, // 60 seconds on mobile, 25 seconds on desktop
-      pingTimeout: isMobile ? 20000 : 5000    // 20 seconds on mobile, 5 seconds on desktop
-    });
+      reconnectionDelayMax: 5000,
+      randomizationFactor: 0.5
+    };
+    
+    // Mobile-specific optimizations
+    if (isMobile) {
+      // Reduce ping interval to save battery
+      socketOptions.pingInterval = 60000; // 60 seconds on mobile
+      socketOptions.pingTimeout = 20000;  // 20 seconds on mobile
+      
+      // iOS-specific settings
+      if (isIOSDevice) {
+        socketOptions.transports = ['polling', 'websocket']; // Polling first on iOS
+        socketOptions.upgrade = false; // Disable upgrading on iOS for stability
+      }
+    } else {
+      // Desktop settings
+      socketOptions.pingInterval = 25000; // 25 seconds on desktop
+      socketOptions.pingTimeout = 5000;   // 5 seconds on desktop
+    }
+    
+    socketRef.current = io(SOCKET_URL, socketOptions);
     
     socketRef.current.on('connect', () => {
       console.log('Connected to WebSocket server with ID:', socketRef.current.id);
@@ -327,6 +461,11 @@ const VideoCall = () => {
   const leaveRoom = async () => {
     setJoined(false);
     
+    // Stop screen sharing if active
+    if (isScreenSharing) {
+      stopScreenSharing();
+    }
+    
     // Update leave time on backend
     try {
       const leaveTime = new Date();
@@ -406,113 +545,110 @@ const VideoCall = () => {
     }
   };
 
-  // End call
-  const endCall = () => {
-    leaveRoom();
+  // Stop screen sharing
+  const stopScreenSharing = () => {
+    if (screenStream) {
+      screenStream.getTracks().forEach(track => track.stop());
+      setScreenStream(null);
+    }
+    
+    if (stream && userVideoRef.current) {
+      userVideoRef.current.srcObject = stream;
+    }
+    
+    setIsScreenSharing(false);
   };
 
   // Share screen
   const shareScreen = async () => {
     try {
       // Check if we're on a mobile device
-      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const isMobile = isMobileDevice();
+      const browserType = getMobileBrowserType();
       
-      let screenStream;
+      let newScreenStream;
       
       if (isMobile) {
-        // For mobile devices, we'll use a different approach
-        // Try to use getDisplayMedia if available
-        if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
-          try {
-            screenStream = await navigator.mediaDevices.getDisplayMedia({
-              video: true,
+        // Enhanced mobile screen sharing options with browser-specific handling
+        try {
+          // Try to use getDisplayMedia if available (newer mobile browsers)
+          if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
+            // Browser-specific constraints
+            let constraints = {
+              video: {
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+                frameRate: { ideal: 15 } // Lower frame rate for mobile to save battery
+              },
               audio: false // Screen audio capture is not supported on most mobile browsers
-            });
-          } catch (mobileError) {
-            // If getDisplayMedia fails, show an alternative option
-            const userChoice = window.confirm(
-              'Screen sharing on mobile requires specific browser support. ' +
-              'As an alternative, you can: \n\n' +
-              '1. Turn off your camera and show content to your camera\n' +
-              '2. Use the file sharing feature (coming soon)\n\n' +
-              'Do you want to turn off your camera instead?'
-            );
+            };
             
-            if (userChoice) {
-              // Turn off camera as an alternative
-              if (stream) {
-                const videoTrack = stream.getVideoTracks()[0];
-                if (videoTrack) {
-                  videoTrack.enabled = false;
-                  setIsVideoOff(true);
-                  
-                  // Notify other participants of video status change
-                  if (socketRef.current) {
-                    socketRef.current.emit('video-status-change', { roomId, userId, videoOff: true });
-                  }
-                  
-                  alert('Camera turned off. You can now show content to your camera.');
-                }
-              }
+            // Chrome on Android specific optimizations
+            if (isAndroid() && browserType === 'chrome') {
+              constraints.video = {
+                width: { max: 1920 },
+                height: { max: 1080 },
+                frameRate: { ideal: 24 }
+              };
             }
+            
+            // iOS Safari specific constraints
+            if (isIOS() && browserType === 'safari') {
+              constraints.video = {
+                width: { max: 1280 },
+                height: { max: 720 },
+                frameRate: { ideal: 15 }
+              };
+            }
+            
+            newScreenStream = await navigator.mediaDevices.getDisplayMedia(constraints);
+          } else {
+            // Alternative approach for mobile devices
+            showMobileScreenSharingOptions();
             return;
           }
-        } else {
-          // Fallback for mobile devices that don't support screen sharing
-          const userChoice = window.confirm(
-            'Screen sharing is not supported on your mobile browser. ' +
-            'As an alternative, you can: \n\n' +
-            '1. Turn off your camera and show content to your camera\n' +
-            '2. Use the file sharing feature (coming soon)\n\n' +
-            'Do you want to turn off your camera instead?'
-          );
+        } catch (mobileError) {
+          console.error('Mobile screen sharing error:', mobileError);
           
-          if (userChoice) {
-            // Turn off camera as an alternative
-            if (stream) {
-              const videoTrack = stream.getVideoTracks()[0];
-              if (videoTrack) {
-                videoTrack.enabled = false;
-                setIsVideoOff(true);
-                
-                // Notify other participants of video status change
-                if (socketRef.current) {
-                  socketRef.current.emit('video-status-change', { roomId, userId, videoOff: true });
-                }
-                
-                alert('Camera turned off. You can now show content to your camera.');
-              }
-            }
-          }
+          // Show alternative options
+          showMobileScreenSharingOptions();
           return;
         }
       } else {
         // Desktop implementation
-        screenStream = await navigator.mediaDevices.getDisplayMedia({
-          video: true
+        newScreenStream = await navigator.mediaDevices.getDisplayMedia({
+          video: {
+            // Desktop-specific constraints for better quality
+            width: { ideal: 1920 },
+            height: { ideal: 1080 },
+            frameRate: { ideal: 30 }
+          },
+          audio: false // Audio capture not supported in most browsers
         });
       }
       
+      // Set screen sharing state
+      setScreenStream(newScreenStream);
+      setIsScreenSharing(true);
+      
       if (userVideoRef.current) {
-        userVideoRef.current.srcObject = screenStream;
+        userVideoRef.current.srcObject = newScreenStream;
       }
       
       // Replace video track in the original stream
       if (stream) {
-        const screenTrack = screenStream.getVideoTracks()[0];
+        const screenTrack = newScreenStream.getVideoTracks()[0];
         const videoTrack = stream.getVideoTracks()[0];
-        stream.removeTrack(videoTrack);
-        stream.addTrack(screenTrack);
         
-        // Stop screen sharing when user stops it
-        screenTrack.onended = () => {
-          if (stream && userVideoRef.current) {
-            userVideoRef.current.srcObject = stream;
-          }
+        if (videoTrack && screenTrack) {
+          stream.removeTrack(videoTrack);
+          stream.addTrack(screenTrack);
           
-          // Re-enable the video button
-          setIsVideoOff(false);
-        };
+          // Stop screen sharing when user stops it
+          screenTrack.onended = () => {
+            stopScreenSharing();
+          };
+        }
       }
     } catch (error) {
       console.error('Error sharing screen:', error);
@@ -523,6 +659,46 @@ const VideoCall = () => {
         alert('No screen sharing sources found. This feature may not be supported on your device.');
       } else {
         alert('Error sharing screen: ' + (error.message || 'Unknown error'));
+      }
+      
+      // Reset screen sharing state on error
+      setIsScreenSharing(false);
+      setScreenStream(null);
+    }
+  };
+
+  // Show mobile screen sharing options
+  const showMobileScreenSharingOptions = () => {
+    const userChoice = window.confirm(
+      'Screen sharing on mobile requires specific browser support. ' +
+      'As an alternative, you can: \n\n' +
+      '1. Turn off your camera and show content to your camera\n' +
+      '2. Use the file sharing feature (coming soon)\n\n' +
+      'Do you want to turn off your camera instead?'
+    );
+    
+    if (userChoice) {
+      // Turn off camera as an alternative
+      if (stream) {
+        const videoTrack = stream.getVideoTracks()[0];
+        if (videoTrack) {
+          videoTrack.enabled = false;
+          setIsVideoOff(true);
+          
+          // Notify other participants of video status change
+          if (socketRef.current) {
+            socketRef.current.emit('video-status-change', { roomId, userId, videoOff: true });
+          }
+          
+          // Show mobile-specific instructions
+          if (isIOS()) {
+            alert('Camera turned off. You can now show content to your camera. \n\nTip for iOS: Use the Control Center to quickly switch between front and rear cameras.');
+          } else if (isAndroid()) {
+            alert('Camera turned off. You can now show content to your camera. \n\nTip for Android: Use the camera switch button in your device\'s quick settings.');
+          } else {
+            alert('Camera turned off. You can now show content to your camera.');
+          }
+        }
       }
     }
   };
@@ -571,6 +747,11 @@ const VideoCall = () => {
       console.error('Recording error:', error);
       alert('Failed to toggle recording: ' + (error.message || 'Unknown error'));
     }
+  };
+
+  // End call
+  const endCall = () => {
+    leaveRoom();
   };
 
   // Generate transcript
@@ -814,6 +995,9 @@ const VideoCall = () => {
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
       }
+      if (screenStream) {
+        screenStream.getTracks().forEach(track => track.stop());
+      }
       if (socketRef.current) {
         socketRef.current.close();
       }
@@ -830,6 +1014,12 @@ const VideoCall = () => {
 
   return (
     <div className="video-call-container">
+      {/* Mobile notification */}
+      {isMobileDevice() && (
+        <div className="mobile-notification">
+          <p>📱 Enhanced mobile experience enabled! All features including screen sharing are optimized for your device.</p>
+        </div>
+      )}
       <div className="video-header">
         <h2>{meetingInfo?.title || 'AI Meeting Room'}</h2>
         {joined ? (
@@ -914,10 +1104,13 @@ const VideoCall = () => {
         <button className="control-button video" onClick={toggleVideo}>
           {isVideoOff ? '🎥 Start Video' : '📷 Stop Video'}
         </button>
-        {/* Only show screen share button if supported */}
-        {(!isMobileDevice() || (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia)) && (
-          <button className="control-button share" onClick={shareScreen}>
-            💻 {isMobileDevice() ? 'Share Content' : 'Share Screen'}
+        {/* Enhanced screen share button with better mobile support */}
+        {isScreenSharingSupported() && (
+          <button 
+            className={`control-button share ${isScreenSharing ? 'active' : ''}`} 
+            onClick={isScreenSharing ? stopScreenSharing : shareScreen}
+          >
+            {isScreenSharing ? '⏹️ Stop Sharing' : (isMobileDevice() ? '📱 Share Content' : '💻 Share Screen')}
           </button>
         )}
         <button className="control-button participants" onClick={() => setShowParticipants(!showParticipants)}>

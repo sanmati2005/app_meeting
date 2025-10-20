@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background: linear-gradient(135deg, #1a2a6c, #2c3e50);
-  color: white;
+  background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+  color: var(--text-primary);
   padding: 20px;
   box-sizing: border-box;
 }
@@ -17,7 +17,7 @@
   border-radius: 15px;
   margin-bottom: 20px;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
 }
 
 .video-header h2 {
@@ -32,7 +32,7 @@
   border-radius: 25px;
   border: none;
   background: rgba(255, 255, 255, 0.1);
-  color: white;
+  color: var(--text-primary);
   margin-right: 10px;
   outline: none;
 }
@@ -46,8 +46,8 @@
   padding: 10px 20px;
   border-radius: 25px;
   border: none;
-  background: linear-gradient(to right, #ff7e5f, #feb47b);
-  color: white;
+  background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+  color: var(--text-primary);
   cursor: pointer;
   font-weight: bold;
   transition: transform 0.2s;
@@ -108,7 +108,7 @@
 .video-controls button {
   background: rgba(0, 0, 0, 0.5);
   border: none;
-  color: white;
+  color: var(--text-primary);
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -124,6 +124,7 @@
   padding: 5px 10px;
   border-radius: 15px;
   font-size: 14px;
+  color: var(--text-primary);
 }
 
 .main-controls {
@@ -135,14 +136,14 @@
   border-radius: 15px;
   margin-top: 20px;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
 }
 
 .control-button {
   padding: 15px 25px;
   border-radius: 30px;
   border: none;
-  color: white;
+  color: var(--text-primary);
   cursor: pointer;
   font-weight: bold;
   font-size: 16px;
@@ -158,6 +159,24 @@
 
 .control-button.end-call {
   background: linear-gradient(to right, #ff416c, #ff4b2b);
+}
+
+/* Mobile notification */
+.mobile-notification {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+  text-align: center;
+  backdrop-filter: blur(5px);
+  border: 1px solid var(--border-color);
+}
+
+.mobile-notification p {
+  margin: 0;
+  color: #ffd200;
+  font-weight: bold;
+  font-size: 14px;
 }
 
 .control-button.mic {
@@ -179,10 +198,50 @@
   
   .main-controls {
     flex-wrap: wrap;
+    padding: 15px;
   }
   
   .control-button {
     padding: 12px 20px;
     font-size: 14px;
+    flex: 1 1 auto;
+    min-width: 120px;
+    margin: 5px;
+  }
+  
+  .video-header {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+  
+  .room-input, .room-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+  
+  .room-input input {
+    width: 100%;
+    margin-right: 0;
+  }
+  
+  .room-input button,
+  .room-info button {
+    width: 100%;
+  }
+  
+  .video-wrapper {
+    aspect-ratio: 4/3;
+  }
+  
+  .mobile-notification {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .mobile-notification p {
+    font-size: 12px;
   }
 }

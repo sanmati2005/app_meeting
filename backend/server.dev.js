@@ -23,7 +23,15 @@ const io = new Server(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"]
-  }
+  },
+  transports: ['websocket', 'polling'],
+  allowEIO3: true,
+  // Mobile-friendly settings for development
+  pingInterval: 60000,  // 60 seconds
+  pingTimeout: 20000,   // 20 seconds
+  upgradeTimeout: 30000, // 30 seconds
+  allowUpgrades: true,
+  cleanupEmptyChildNamespaces: true
 });
 
 // Middleware
@@ -64,6 +72,16 @@ app.get('/', (req, res) => {
 // Socket.io connection handling
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
+
+  // Mobile device detection
+  const isMobile = socket.handshake.headers['user-agent'] && 
+    /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(socket.handshake.headers['user-agent']);
+  
+  // Set mobile-specific timeout values
+  if (isMobile) {
+    // Increase timeouts for mobile devices
+    socket.setTimeout && socket.setTimeout(120000); // 2 minutes
+  }
 
   // Handle room joining
   socket.on('join-room', (roomId, userId) => {
