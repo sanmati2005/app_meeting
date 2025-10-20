@@ -96,13 +96,31 @@ const VideoCall = () => {
   const initWebSocket = () => {
     // Connect to the WebSocket server
     const SOCKET_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
-    socketRef.current = io(SOCKET_URL);
+    console.log('Connecting to WebSocket server:', SOCKET_URL);
+    
+    // For production, we might need to use a different approach
+    socketRef.current = io(SOCKET_URL, {
+      transports: ['websocket', 'polling'],
+      withCredentials: true,
+      timeout: 20000,
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000
+    });
     
     socketRef.current.on('connect', () => {
       console.log('Connected to WebSocket server with ID:', socketRef.current.id);
       
       // Join the room
       socketRef.current.emit('join-room', roomId, userId);
+    });
+    
+    socketRef.current.on('connect_error', (error) => {
+      console.error('WebSocket connection error:', error);
+    });
+    
+    socketRef.current.on('disconnect', (reason) => {
+      console.log('WebSocket disconnected:', reason);
     });
     
     socketRef.current.on('user-connected', (userId) => {

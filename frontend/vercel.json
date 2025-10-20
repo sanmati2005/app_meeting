@@ -23,7 +23,7 @@
     },
     {
       "src": "/socket.io/(.*)",
-      "dest": "/socket.io/$1"
+      "dest": "https://app-meeting-2-lp0a.onrender.com/socket.io/$1"
     },
     {
       "src": "/(.*)",

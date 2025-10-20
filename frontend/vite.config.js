@@ -5,6 +5,9 @@ import react from '@vitejs/plugin-react';
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   
+  // Use the environment variable or fallback to localhost for development
+  const backendUrl = env.VITE_BACKEND_URL || 'http://localhost:5000';
+  
   return {
     plugins: [react()],
     server: {
@@ -12,9 +15,15 @@ export default defineConfig(({ mode }) => {
       open: true,
       proxy: {
         '/api': {
-          target: env.VITE_BACKEND_URL || 'http://localhost:5000',
+          target: backendUrl,
           changeOrigin: true,
-          secure: false,
+          secure: true,
+        },
+        '/socket.io': {
+          target: backendUrl,
+          changeOrigin: true,
+          secure: true,
+          ws: true // Enable WebSocket proxying
         }
       }
     },
